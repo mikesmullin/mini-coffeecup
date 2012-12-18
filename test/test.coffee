@@ -166,11 +166,12 @@ describe 'MiniCoffeeCup', ->
           link rel: 'stylesheet', href: '/css/app.css'
     expecting "<!doctype html><html>\n  <head>\n    <meta charset=\"utf-8\"/>\n    <title>Untitled | A completely plausible website</title>\n    <link rel=\"stylesheet\" href=\"/css/app.css\"/>\n  </head>\n</html>\n"
 
-  it 'renders selector-style #id and .class names'
-  #  template = ->
-  #    div '#hamster', ->
-  #      div '.cat', ->
-  #        div '#gerbil.rat'
+  it 'renders selector-style #id and .class names', ->
+    template = ->
+      div '#hamster', ->
+        div '.cat', ->
+          div '#gerbil.rat', ->
+    expecting "<div id=\"hamster\"><div class=\"cat\"><div id=\"gerbil\" class=\"rat\"></div></div></div>"
 
   it 'renders with compiled coffeescript', ->
     template = ->
@@ -181,3 +182,4 @@ describe 'MiniCoffeeCup', ->
 
   it 'renders with compiled stylus'
   it 'can compile to a function'
+  it 'can render a partial by reading a file from a relative path'

@@ -42,15 +42,63 @@
           return o.special_chars[c] || c;
         });
       },
-      tag: function(p, a, aa, s) {
+      tag: function(p, af, aa, s) {
         return function() {
-          var h, _a;
-          h = arguments[arguments.length - 1];
-          if (typeof h !== 'function' && typeof h !== 'string') {
-            h = '';
-          }
+          var a, h, x, _a, _split;
           l++;
-          _a = typeof arguments[0] === 'object' && typeof a === 'function' ? a(arguments[0]) : '';
+          a = arguments;
+          h = '';
+          _a = '';
+          _split = function(s) {
+            var attrs;
+            attrs = {};
+            s.replace(/([#.][\w\d-_]+)/g, function(m) {
+              if (m[0] === '.') {
+                return attrs["class"] = (attrs["class"] || '') + (attrs["class"] ? ' ' : '') + m.substr(1);
+              } else if (m[0] === '#') {
+                return attrs.id = m.substr(1);
+              }
+            });
+            return attrs;
+          };
+          if (a.length === 3 && typeof a[0] === 'string' && typeof a[1] === 'object' && typeof a[2] === 'function') {
+            _a = _split(a[0]);
+            h = a[2];
+          } else if (a.length === 2) {
+            if (typeof a[0] === 'string' && typeof a[1] === 'function') {
+              _a = _split(a[0]);
+              h = a[1];
+            } else if (typeof a[0] === 'object' && typeof a[1] === 'function') {
+              _a = a[0];
+              h = a[1];
+            } else if (typeof a[0] === 'object' && typeof a[1] === 'string') {
+              _a = a[0];
+              h = a[1];
+            } else if (typeof a[0] === 'string' && typeof a[1] === 'string') {
+              _a = _split(a[0]);
+              h = a[1];
+            } else if (typeof a[0] === 'string' && typeof a[1] === 'object') {
+              x = _split(a[0]);
+              _a = a[1];
+              if (x["class"]) {
+                _a["class"] = (_a["class"] || '') + (_a["class"] ? ' ' : '') + x["class"];
+              }
+              if (x.id) {
+                _a.id = x.id;
+              }
+            }
+          } else if (a.length === 1) {
+            if (typeof a[0] === 'string') {
+              h = a[0];
+            } else if (typeof a[0] === 'object') {
+              _a = a[0];
+            } else if (typeof a[0] === 'function') {
+              h = a[0];
+            }
+          }
+          if (typeof _a === 'object' && typeof af === 'function') {
+            _a = af(_a);
+          }
           if (typeof h === 'function') {
             t += (function() {
               t = '';

@@ -22,11 +22,49 @@ not ((context, definition) ->
     t = ''; l = 0; o = @o; o.indent = ((i)->->(new Array(l)).join i)(o.indent)
     globals =
       h: (s) -> (''+s).replace /[&<>"']/g, (c) -> o.special_chars[c] or c
-      tag: (p,a,aa,s)-> -> # prefix, attributes function, after-attributes, suffix
-        h = arguments[arguments.length-1]
-        h = '' if typeof h isnt 'function' and typeof h isnt 'string'
-        l++
-        _a = if typeof arguments[0] is 'object' and typeof a is 'function' then a(arguments[0]) else ''
+      tag: (p,af,aa,s)->-> # prefix, attributes function, after-attributes, suffix
+        l++; a=arguments
+        h = ''; _a = ''
+        _split = (s) -> # convert string to arguments object
+          attrs = {}
+          s.replace /([#.][\w\d-_]+)/g, (m) ->
+            if m[0] is '.'
+              attrs.class = (attrs.class or '') + (if attrs.class then ' ' else '') + m.substr 1
+            else if m[0] is '#'
+              attrs.id = m.substr 1
+          return attrs
+        if a.length is 3 and typeof a[0] is 'string' and typeof a[1] is 'object' and typeof a[2] is 'function'
+          _a = _split(a[0])
+          h = a[2]
+        else if a.length is 2
+          if typeof a[0] is 'string' and typeof a[1] is 'function'
+            _a = _split(a[0])
+            h = a[1]
+          else if typeof a[0] is 'object' and typeof a[1] is 'function'
+            _a = a[0]
+            h = a[1]
+          else if typeof a[0] is 'object' and typeof a[1] is 'string'
+            _a = a[0]
+            h = a[1]
+          else if typeof a[0] is 'string' and typeof a[1] is 'string'
+            _a = _split(a[0])
+            h = a[1]
+          else if typeof a[0] is 'string' and typeof a[1] is 'object'
+            x = _split(a[0])
+            _a = a[1]
+            if x.class
+              _a.class = (_a.class or '') + (if _a.class then ' ' else '') + x.class
+            if x.id
+              _a.id = x.id
+        else if a.length is 1
+          if typeof a[0] is 'string'
+            h = a[0]
+          else if typeof a[0] is 'object'
+            _a = a[0]
+          else if typeof a[0] is 'function'
+            h = a[0]
+        if typeof _a is 'object' and typeof af is 'function'
+          _a = af(_a)
         if typeof h is 'function'
           t+=(->
             t = ''
