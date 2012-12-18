@@ -10,52 +10,107 @@
   c = function(o, templates) {
     this.o = o != null ? o : {};
     this.templates = templates != null ? templates : {};
+    this.o.doctypes = this.o.doctypes || {};
+    this.o.doctypes[5] = '<!doctype html>';
+    this.o.doctypes['xml'] = '<?xml version="1.0" encoding="utf-8" ?>';
+    this.o.doctypes['1.1'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">';
+    this.o.doctypes['basic'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">';
+    this.o.doctypes['frameset'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">';
+    this.o.doctypes['mobile'] = '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">';
+    this.o.doctypes['strict'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
+    this.o.doctypes['transitional'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+    this.o.html_block_tags = ['a', 'abbr', 'acronym', 'address', 'applet', 'article', 'aside', 'audio', 'b', 'bdo', 'big', 'blockquote', 'body', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'colgroup', 'command', 'datalist', 'dd', 'del', 'details', 'dfn', 'dir', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'html', 'i', 'iframe', 'ins', 'keygen', 'kbd', 'label', 'legend', 'li', 'map', 'mark', 'menu', 'meter', 'nav', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'tt', 'u', 'ul', 'var', 'video', 'wbr', 'xmp'];
+    this.o.html_atomic_tags = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'link', 'meta', 'param'];
+    this.o.autoescape = this.o.autoescape || false;
+    this.o.special_chars = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    };
+    this.o.format = this.o.format || false;
+    this.o.indent = (this.o.format || '') && (this.o.indent || '  ');
+    return this.o.newline = (this.o.format || '') && (this.o.newline || "\n");
   };
   c.prototype.render = function(f, locals) {
-    var block, doctype, l, t, tag, text, _format, _i, _indent, _indentation, _linebreak, _ref;
+    var globals, html_attributes, l, o, t, tag, _i, _j, _len, _len1, _ref, _ref1;
     t = '';
     l = 0;
-    _format = this.o.format || false;
-    _indentation = (this.o.format || '') && (this.o.indentation || '  ');
-    _linebreak = (this.o.format || '') && (this.o.linebreak || "\n");
-    _indent = function() {
-      return (new Array(l)).join(_indentation);
-    };
-    tag = function(p, s) {
-      var _this = this;
-      return function(h) {
-        l++;
-        if (typeof h === 'function') {
-          t += (function() {
-            t = '';
-            h.call(locals);
-            if (t !== '') {
-              t = _linebreak + t + _indent();
-            }
-            return t = _indent() + p + t + s + _linebreak;
-          })();
-        } else {
-          t += _indent() + p + (typeof h === 'undefined' ? '' : h) + s + _linebreak;
-        }
-        return l--;
+    o = this.o;
+    o.indent = (function(i) {
+      return function() {
+        return (new Array(l)).join(i);
       };
+    })(o.indent);
+    globals = {
+      h: function(s) {
+        return ('' + s).replace(/[&<>"']/g, function(c) {
+          return o.special_chars[c] || c;
+        });
+      },
+      tag: function(p, a, aa, s) {
+        return function() {
+          var h, _a;
+          h = arguments[arguments.length - 1];
+          if (typeof h !== 'function') {
+            h = '';
+          }
+          l++;
+          _a = typeof arguments[0] === 'object' ? a(arguments[0]) : '';
+          if (typeof h === 'function') {
+            t += (function() {
+              t = '';
+              h.call(locals);
+              if (t !== '') {
+                t = o.newline + t + o.indent();
+              }
+              return t = o.indent() + p + _a + aa + t + s + o.newline;
+            })();
+          } else {
+            t += o.indent() + p + _a + aa + (typeof h === 'undefined' ? '' : o.autoescape ? globals.h(h) : h) + s + o.newline;
+          }
+          return l--;
+        };
+      },
+      coffeescript: function(f) {
+        return globals.script(('' + f).slice(11));
+      },
+      comment: function(f) {
+        return globals.tag('<!--', '-->')(f);
+      },
+      doctype: function(v) {
+        return t = o.doctypes[v || 5] + t;
+      },
+      ie: function(s, f) {
+        return globals.tag('<!--[if ' + s + ']>', '<![endif]-->')(f);
+      },
+      text: function(s) {
+        return t += s;
+      },
+      block: function(s, f) {
+        return globals.tag('{{' + s, null, '}}', '{{/' + (s.split(/ +/)[0]) + '}}')(f);
+      }
     };
-    text = function(t) {
-      return tag('', t);
+    html_attributes = function(a) {
+      var k, tt;
+      tt = '';
+      for (k in a) {
+        tt += typeof a[k] !== 'boolean' ? ' ' + k + '="' + a[k] + '"' : val === true ? ' ' + k : '';
+      }
+      return tt;
     };
-    doctype = function(v) {
-      return tag((v === 5 ? '<!doctype html>' : ''), '')();
-    };
-    block = function(t, h) {
-      return tag('{{' + t + '}}', '{{/' + (t.split(/ +/)[0]) + '}}')(h);
-    };
-    for (_i in _ref = ['html', 'head', 'body', 'p', 'ul', 'li', 'a', 'table', 'thead', 'tr', 'th', 'tbody', 'td', 'title']) {
-      eval("" + _ref[_i] + " = tag('<'+_ref[_i]+'>', '</'+_ref[_i]+'>')");
+    _ref = o.html_block_tags;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      tag = _ref[_i];
+      globals[tag] = globals.tag('<' + tag, html_attributes, '>', '</' + tag + '>');
     }
-    for (_i in _ref = ['link', 'br', 'hr']) {
-      eval("" + _ref[_i] + " = tag('<'+_ref[_i]+'/>')");
+    _ref1 = o.html_atomic_tags;
+    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+      tag = _ref1[_j];
+      globals[tag] = globals.tag('<' + tag, html_attributes, '/>', '');
     }
-    eval("(" + f + ").call(locals)");
+    (Function('globals', 'locals', 'with(globals){(' + f + ').call(locals)}'))(globals, locals);
     return t;
   };
   return c;

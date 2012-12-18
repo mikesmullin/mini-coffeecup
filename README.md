@@ -6,6 +6,7 @@
  * NO [dependencies](https://github.com/mikesmullin/mini-coffeecup/blob/production/package.json)
 
 Inspired by [coffeecup](https://github.com/gradus/coffeecup),
+ and [ck](https://github.com/aeosynth/ck),
  and [mini-handlebars](https://github.com/mikesmullin/mini-handlebars) libraries.
 
 
@@ -58,6 +59,6 @@ TODO
 
  * add support for attributes
  * add support for class names as first argument
- * name all html tags (atomic vs block)
  * provide all coffeescript helpers
  * support auto-escaping? i just do this automatically before i give it to coffeecup. i don't really need it.
+ * support inline stylus?
