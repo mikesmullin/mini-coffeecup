@@ -8,7 +8,7 @@
   },
   "scripts": {
     "pretest": "coffee --bare -o js coffee/mini-coffeecup.coffee",
-    "test": "mocha --reporter spec --bail --ui bdd --colors --timeout 10000 --compilers coffee:coffee-script --require coffee-script --require test/helpers.coffee --globals 'html, head, body, p, ul, li, a, table, thead, tr, th, tbody, td, link, br, hr, title, abbr, acronym, address, applet, article, aside, audio, b, bdo, big, blockquote, button, canvas, caption, center, cite, code, colgroup, command, datalist, dd, del, details, dfn, dir, div, dl, dt, em, embed, fieldset, figcaption, figure, font, footer, form, frameset, h1, h2, h3, h4, h5, h6, header, hgroup, i, iframe, ins, keygen, kbd, label, legend, map, mark, menu, meter, nav, noframes, noscript, object, ol, optgroup, option, output, pre, progress, q, rp, rt, ruby, s, samp, script, section, select, small, source, span, strike, strong, style, sub, summary, sup, textarea, tfoot, time, tt, u, area, base, basefont, col, frame, img, input, meta, param' test/test.coffee"
+    "test": "mocha --reporter spec --bail --ui bdd --colors --timeout 10000 --compilers coffee:coffee-script --require coffee-script --require test/helpers.coffee test/test.coffee"
   },
   "repository": {
     "type": "git",

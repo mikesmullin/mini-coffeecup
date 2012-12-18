@@ -56,6 +56,4 @@ Or try it immediately in your browser with [codepen](http://codepen.io/mikesmull
 TODO
 ----
 
- * add support for class names as first argument
- * provide all coffeescript helpers
  * support inline stylus?

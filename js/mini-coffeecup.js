@@ -12,15 +12,8 @@
     this.templates = templates != null ? templates : {};
     this.o.doctypes = this.o.doctypes || {};
     this.o.doctypes[5] = '<!doctype html>';
-    this.o.doctypes['xml'] = '<?xml version="1.0" encoding="utf-8" ?>';
-    this.o.doctypes['1.1'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">';
-    this.o.doctypes['basic'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">';
-    this.o.doctypes['frameset'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">';
-    this.o.doctypes['mobile'] = '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">';
-    this.o.doctypes['strict'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
-    this.o.doctypes['transitional'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-    this.o.html_block_tags = ['a', 'abbr', 'acronym', 'address', 'applet', 'article', 'aside', 'audio', 'b', 'bdo', 'big', 'blockquote', 'body', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'colgroup', 'command', 'datalist', 'dd', 'del', 'details', 'dfn', 'dir', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'html', 'i', 'iframe', 'ins', 'keygen', 'kbd', 'label', 'legend', 'li', 'map', 'mark', 'menu', 'meter', 'nav', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'tt', 'u', 'ul', 'var', 'video', 'wbr', 'xmp'];
-    this.o.html_atomic_tags = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'link', 'meta', 'param'];
+    this.o.html_block_tags = ['a', 'abbr', 'address', 'article', 'aside', 'audio', 'b', 'bdi', 'bdo', 'blockquote', 'body', 'button', 'canvas', 'caption', 'cite', 'code', 'colgroup', 'command', 'data', 'datagrid', 'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'eventsource', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'html', 'i', 'iframe', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'mark', 'map', 'menu', 'meter', 'nav', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'pre', 'progress', 'q', 'ruby', 'rp', 'rt', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr'];
+    this.o.html_atomic_tags = ['area', 'base', 'br', 'col', 'hr', 'img', 'input', 'link', 'meta', 'param'];
     this.o.autoescape = this.o.autoescape || false;
     this.o.special_chars = {
       '&': '&amp;',
@@ -53,11 +46,11 @@
         return function() {
           var h, _a;
           h = arguments[arguments.length - 1];
-          if (typeof h !== 'function') {
+          if (typeof h !== 'function' && typeof h !== 'string') {
             h = '';
           }
           l++;
-          _a = typeof arguments[0] === 'object' ? a(arguments[0]) : '';
+          _a = typeof arguments[0] === 'object' && typeof a === 'function' ? a(arguments[0]) : '';
           if (typeof h === 'function') {
             t += (function() {
               t = '';
@@ -74,29 +67,32 @@
         };
       },
       coffeescript: function(f) {
-        return globals.script(('' + f).slice(11));
+        return globals.script(('' + f).replace(/^function \(\) ?{\s*/, '').replace(/\s*}$/, ''));
       },
-      comment: function(f) {
-        return globals.tag('<!--', '-->')(f);
+      comment: function(s, f) {
+        return globals.tag('<!--' + s, null, '', '-->')(f);
       },
       doctype: function(v) {
         return t = o.doctypes[v || 5] + t;
       },
       ie: function(s, f) {
-        return globals.tag('<!--[if ' + s + ']>', '<![endif]-->')(f);
+        return globals.tag('<!--[if ' + s + ']>', null, '', '<![endif]-->')(f);
       },
       text: function(s) {
-        return t += s;
+        return t += o.autoescape ? globals.h(s) : s;
       },
       block: function(s, f) {
         return globals.tag('{{' + s, null, '}}', '{{/' + (s.split(/ +/)[0]) + '}}')(f);
+      },
+      markup: function(s) {
+        return t += s;
       }
     };
     html_attributes = function(a) {
       var k, tt;
       tt = '';
       for (k in a) {
-        tt += typeof a[k] !== 'boolean' ? ' ' + k + '="' + a[k] + '"' : val === true ? ' ' + k : '';
+        tt += typeof a[k] !== 'boolean' ? ' ' + k + '="' + (o.autoescape ? globals.h(a[k]) : a[k]) + '"' : val === true ? ' ' + k : '';
       }
       return tt;
     };
