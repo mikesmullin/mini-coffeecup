@@ -15,8 +15,7 @@
     "url": "git://github.com/mikesmullin/mini-coffeecup.git"
   },
   "keywords": [
-    "handlebars",
-    "mustache",
+    "coffeecup",
     "template",
     "library",
     "node.js",
