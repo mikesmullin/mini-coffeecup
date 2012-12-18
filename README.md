@@ -1,7 +1,7 @@
 # Why MiniCoffeeCup? *&Uacute;&sup3; &upsilon;&sup3;*
 
  * [~23% faster](http://jsperf.com/coffeecup-vs-mini-coffeecup/2) than the official library compiling from markup to html on chrome/v8
- * 50% smaller file with just [115 lines](https://github.com/mikesmullin/mini-coffeecup/blob/production/js/mini-coffeecup.js) or [3.45KB minified (1.52KB gzipped)](https://raw.github.com/mikesmullin/mini-coffeecup/production/js/mini-coffeecup.min.js)
+ * 50+% smaller file with [less lines](https://github.com/mikesmullin/mini-coffeecup/blob/production/js/mini-coffeecup.js) [and even less minified](https://raw.github.com/mikesmullin/mini-coffeecup/production/js/mini-coffeecup.min.js) or gzipped
  * NO [dependencies](https://github.com/mikesmullin/mini-coffeecup/blob/production/package.json)
 
 Inspired by [coffeecup](https://github.com/gradus/coffeecup),
