@@ -1,8 +1,7 @@
 # Why MiniCoffeeCup? *&Uacute;&sup3; &upsilon;&sup3;*
 
- * [~82% faster](http://jsperf.com/handlebars-vs-mini-coffeecup/4) than the official library compiling from markup to html on chrome/v8
- * 93.72% smaller file with just [59 lines](https://github.com/mikesmullin/mini-coffeecup/blob/production/js/mini-coffeecup.js) or [1.1KB minified (639 bytes gzipped)](https://raw.github.com/mikesmullin/mini-coffeecup/production/js/mini-coffeecup.min.js)
- * a TON more flexible; blocks are just javascript functions that take any number of arguments, and like express/sinatra we make no assumptions about which ones you want.
+ * [~23% faster](http://jsperf.com/coffeecup-vs-mini-coffeecup/2) than the official library compiling from markup to html on chrome/v8
+ * 50% smaller file with just [115 lines](https://github.com/mikesmullin/mini-coffeecup/blob/production/js/mini-coffeecup.js) or [3.45KB minified (1.52KB gzipped)](https://raw.github.com/mikesmullin/mini-coffeecup/production/js/mini-coffeecup.min.js)
  * NO [dependencies](https://github.com/mikesmullin/mini-coffeecup/blob/production/package.json)
 
 Inspired by [coffeecup](https://github.com/gradus/coffeecup),
@@ -57,8 +56,6 @@ Or try it immediately in your browser with [codepen](http://codepen.io/mikesmull
 TODO
 ----
 
- * add support for attributes
  * add support for class names as first argument
  * provide all coffeescript helpers
- * support auto-escaping? i just do this automatically before i give it to coffeecup. i don't really need it.
  * support inline stylus?
