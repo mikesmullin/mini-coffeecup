@@ -1,7 +1,7 @@
 {
   "name": "mini-coffeecup",
   "version": "0.1.0",
-  "description": "Minimalist Handlebars.js",
+  "description": "Minimalist CoffeeCup.js",
   "main": "js/mini-coffeecup.js",
   "directories": {
     "test": "test"

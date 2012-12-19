@@ -95,12 +95,5 @@ not ((context, definition) ->
     (Function 'globals', 'locals', 'with(globals){('+f+').call(locals)}')(globals, locals)
     return t
 
-  #c.prototype.compile = (code) ->
-    # TODO: may be able to wrap the c.render() function and return it
-    # TODO: for the intermediary compile-to-function,
-    #       may also be able to return ''+f
-    # TODO: consult my original notes from coffeecup vs handlebars jsperf
-    #       for the ideal solution to above
-
   return c
 )())
