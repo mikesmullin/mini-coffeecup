@@ -8,6 +8,11 @@ Inspired by [coffeecup](https://github.com/gradus/coffeecup),
  and [ck](https://github.com/aeosynth/ck),
  and [mini-handlebars](https://github.com/mikesmullin/mini-handlebars) libraries.
 
+NOTICE:
+-------
+
+As I was developing mini-coffeecup, I had a better idea which became [coffee-templates](https://github.com/mikesmullin/coffee-templates). I will still keep mini-coffeecup around for posterity, but no new features are likely to be added.
+
 
 ## Quick Example
 
